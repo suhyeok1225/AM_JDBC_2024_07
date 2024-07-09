@@ -1,6 +1,6 @@
 package org.koreait;
 
-class Article {
+public class Article {
     private int id;
     private String regDate;
     private String updateDate;
