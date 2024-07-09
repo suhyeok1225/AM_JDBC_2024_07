@@ -24,7 +24,6 @@ public class Main {
             if (cmd.equals("exit")) {
                 break;
             }
-
             if (cmd.equals("article write")) {
                 int id = lastarticleId + 1;
                 System.out.println("==write==");
@@ -34,8 +33,9 @@ public class Main {
 
                 System.out.print("내용: ");
                 String body = sc.nextLine();
-
-                Article article = new Article(id, title, body);
+                String regDate = org.koreait.Util.getNow();
+                String updateDate = regDate;
+                Article article = new Article(id, regDate, updateDate, title, body);
                 articles.add(article);
                 System.out.println(id + "번째 글이 생성!");
                 lastarticleId++;
@@ -81,19 +81,57 @@ public class Main {
                     }
                 }
 
-            } else if (cmd.equals("article list")) {
+            } else if (cmd.startsWith("article list")) {
                 System.out.println("==list==");
                 if (articles.size() == 0) {
                     System.out.println("아무것도 없음");
+                } else {
+                    System.out.println("  번호   /    날짜   /   제목   /   내용   ");
+                    for (int i = articles.size() - 1; i >= 0; i--) {
+                        Article article = articles.get(i);
+                        if (Util.getNow().split(" ")[0].equals(article.getRegDate().split(" ")[0])) {
+                            System.out.printf("  %d   /   %s      /   %s   /   %s  \n", article.getId(), article.getRegDate().split(" ")[1], article.getTitle(), article.getBody());
+                        } else {
+                            System.out.printf("  %d   /   %s      /   %s   /   %s  \n", article.getId(), article.getRegDate().split(" ")[0], article.getTitle(), article.getBody());
+                        }
+                    }
+                }
+            } else if (cmd.startsWith("article modify")) {
+                System.out.println("==modify==");
+                int id = Integer.parseInt(cmd.split(" ")[2]);
+                Article foundArticle = articles.get(id);
+                if (foundArticle == null) {
+                    System.out.println("해당 게시글은 없습니다");
                     continue;
                 }
-                System.out.println("  번호  /   제목   /   내용  ");
-                for (Article article : articles) {
-                    System.out.printf("   %d   /    %s    /    %s    \n", article.getId(), article.getTitle(), article.getBody());
+                System.out.println("기존 제목 : " + foundArticle.getTitle());
+                System.out.println("기존 내용 : " + foundArticle.getBody());
+                System.out.print("새 제목 : ");
+                String newTitle = sc.nextLine();
+                System.out.print("새 내용 : ");
+                String newBody = sc.nextLine();
 
+                foundArticle.setTitle(newTitle);
+                foundArticle.setBody(newBody);
+                foundArticle.setUpdateDate(Util.getNow());
+                System.out.println(id + "번 게시글이 수정되었습니다");
+            } else if (cmd.startsWith("article delete")) {
+                System.out.println("==delete==");
+                int id = Integer.parseInt(cmd.split(" ")[2]);
+                Article foundArticle = articles.get(id);
+                if (foundArticle == null) {
+                    System.out.printf("해당 %d 번 게시글은 없습니다\n", id);
+                    continue;
                 }
-
+                articles.remove(foundArticle);
+                System.out.println(id + "번 게시글이 삭제되었습니다");
+            } else {
+                System.out.println("사용할 수 없는 명령어입니다");
             }
         }
+        System.out.println("==프로그램 종료==");
+        sc.close();
     }
 }
+
+
