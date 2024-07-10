@@ -1,5 +1,4 @@
 package org.koreait.util;
-
 import org.koreait.exception.SQLErrorException;
 
 import java.sql.*;

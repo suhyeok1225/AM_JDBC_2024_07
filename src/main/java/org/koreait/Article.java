@@ -1,6 +1,7 @@
 package org.koreait;
 
-import java.util.Map;
+import org.koreait.util.Util;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class Article {
@@ -61,11 +62,6 @@ public class Article {
 
     public void setId(int id) {
         this.id = id;
-    }
-    @Override
-    public String toString() {
-        return "Article [id=" + id + ", title=" + title
-                + ", body=" + body + "]";
     }
 
 }
