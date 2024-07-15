@@ -2,13 +2,9 @@ package org.koreait;
 
 import org.koreait.controller.ArticleController;
 import org.koreait.controller.MemberController;
-import org.koreait.util.DBUtil;
-import org.koreait.util.SecSql;
-
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class App {
@@ -63,7 +59,9 @@ public class App {
         }
         ArticleController articleController = new ArticleController(conn, sc);
         MemberController memberController = new MemberController(conn, sc);
-        if (cmd.equals("member join")) {
+        if (cmd.equals("member login")) {
+           memberController.login();
+        } else if (cmd.equals("member join")) {
             memberController.doJoin();
         } else if (cmd.equals("article write")) {
             articleController.doWrite();
