@@ -17,10 +17,25 @@ CREATE TABLE `member`(
                          loginPw CHAR(200) NOT NULL,
                          `name` CHAR(100) NOT NULL
 );
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+title = '제목1',
+`body` = '내용1';
 
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+memberId = 1,
+title = '제목2',
+`body` = '내용2';
 
-
-
+INSERT INTO article
+SET regDate = NOW(),
+updateDate = NOW(),
+title = CONCAT('제목', SUBSTRING(RAND() * 1000 FROM 1 FOR 2)),
+`body` = CONCAT('내용', SUBSTRING(RAND() * 1000 FROM 1 FOR 2));
 
 
 

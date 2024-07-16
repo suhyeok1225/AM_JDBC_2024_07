@@ -17,6 +17,11 @@ public class MemberController {
     }
 
     public void login() {
+
+        if (Container.session.isLogined()) {
+            System.out.println("로그아웃 후 이용해주세요");
+            return;
+        }
         String loginId = null;
         String loginPw = null;
         System.out.println("==로그인==");
@@ -56,14 +61,17 @@ public class MemberController {
                 System.out.println("일치하지 않습니다.");
                 continue;
             }
-            Container.session.loginedMember = member;
-            Container.session.loginedMemberId = member.getId();
+            Container.session.login(member);
             System.out.println(member.getName() + "님 환영합니다.");
             break;
         }
     }
 
     public void doJoin() {
+        if (Container.session.isLogined()) {
+            System.out.println("로그아웃 후 이용해주세요");
+            return;
+        }
         String name = null;
         String loginId = null;
         String loginPw = null;
@@ -121,19 +129,18 @@ public class MemberController {
         System.out.println(name + "님 가입 되었습니다.");
     }
     public void showProfile() {
-        if (Container.session.loginedMemberId == -1) {
-            System.out.println("로그인 상태 x");
+        if (Container.session.isLogined() == false) {
+            System.out.println("로그인 후 이용해주세요");
             return;
-        } else {
-            System.out.println(Container.session.loginedMember);
         }
-
+        System.out.println(Container.session.loginedMember);
     }
 
     public void logout() {
-        System.out.println("==로그아웃==");
-        Container.session.loginedMemberId = -1;
-        Container.session.loginedMember = null;
-
+        if (Container.session.isLogined() == false) {
+            System.out.println("로그인 후 이용해주세요");
+            return;
+        }
+        Container.session.logout();
     }
 }
