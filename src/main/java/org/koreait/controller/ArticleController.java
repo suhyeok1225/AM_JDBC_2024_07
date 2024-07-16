@@ -4,7 +4,6 @@ import org.koreait.container.Container;
 import org.koreait.dto.Article;
 import org.koreait.service.ArticleService;
 import java.util.List;
-import java.util.Map;
 
 public class ArticleController {
 
@@ -31,9 +30,29 @@ public class ArticleController {
         System.out.println(id + "번 글이 생성되었습니다");
     }
 
-    public void showList() {
+    public void showList(String cmd) {
         System.out.println("==목록==");
-        List<Article> articles = articleService.getArticles();
+        //List<Article> articles = articleService.getArticles();
+        String[] cmdBits = cmd.split(" ");
+
+        int page = 1;
+        String searchKeyword = null;
+
+        // 몇 페이지?
+        if (cmdBits.length >= 3) {
+            page = Integer.parseInt(cmdBits[2]);
+        }
+
+        // 검색어
+        if (cmdBits.length >= 4) {
+            searchKeyword = cmdBits[3];
+        }
+
+        // 한 페이지에 10개 씩
+        int itemsInAPage = 10;
+
+        List<Article> articles = articleService.getForPrintArticles(page, itemsInAPage, searchKeyword);
+
         if (articles.size() == 0) {
             System.out.println("게시글이 없습니다");
             return;
