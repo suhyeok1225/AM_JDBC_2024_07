@@ -1,5 +1,6 @@
 package org.koreait.controller;
 
+import org.koreait.container.Container;
 import org.koreait.service.MemberService;
 
 import java.sql.Connection;
@@ -8,14 +9,11 @@ import java.util.Scanner;
 import org.koreait.dto.Member;
 
 public class MemberController {
-    private Connection conn;
-    private Scanner sc;
+
     private MemberService memberService;
 
-    public MemberController(Connection conn, Scanner sc) {
-        this.conn = conn;
-        this.sc = sc;
-        this.memberService = new MemberService(conn);
+    public MemberController() {
+       this.memberService = Container.memberService;
     }
 
     public void login() {
@@ -24,15 +22,14 @@ public class MemberController {
         System.out.println("==로그인==");
         while (true) {
             System.out.print("로그인 아이디 : ");
-            loginId = sc.nextLine().trim();
+            loginId = Container.sc.nextLine().trim();
             if (loginId.length() == 0 || loginId.contains(" ")) {
                 System.out.println("다시입력");
                 continue;
             }
-            boolean isLoginIdDup =
-                    memberService.isLoginIdDup(conn, loginId);
-
-            if (isLoginIdDup == false) {
+            boolean isLoindIdDup =
+                    memberService.isLoginIdDup(loginId);
+            if (isLoindIdDup == false) {
                 System.out.println(loginId + "는 없습니다.");
                 continue;
             }
@@ -48,7 +45,7 @@ public class MemberController {
                 break;
             }
             System.out.print("비밀번호 : ");
-            loginPw = sc.nextLine().trim();
+            loginPw = Container.sc.nextLine().trim();
             if (loginPw.length() == 0 || loginPw.contains(" ")) {
                 tryCount++;
                 System.out.println("비밀번호 다시 입력");
@@ -59,6 +56,8 @@ public class MemberController {
                 System.out.println("일치하지 않습니다.");
                 continue;
             }
+            Container.session.loginedMember = member;
+            Container.session.loginedMemberId = member.getId();
             System.out.println(member.getName() + "님 환영합니다.");
             break;
         }
@@ -72,14 +71,13 @@ public class MemberController {
         System.out.println("==회원가입==");
         while (true) {
             System.out.print("로그인 아이디 : ");
-            loginId = sc.nextLine().trim();
+            loginId = Container.sc.nextLine().trim();
             if (loginId.length() == 0 || loginId.contains(" ")) {
                 System.out.println("다시입력");
                 continue;
             }
 
-            boolean isLoindIdDup =
-                    memberService.isLoginIdDup(conn, loginId);
+            boolean isLoindIdDup = memberService.isLoginIdDup(loginId);
             if (isLoindIdDup) {
                 System.out.println("이미 사용중이다.");
                 continue;
@@ -88,7 +86,7 @@ public class MemberController {
         }
         while (true) {
             System.out.print("비밀번호  : ");
-            loginPw = sc.nextLine().trim();
+            loginPw = Container.sc.nextLine().trim();
             if (loginPw.length() == 0 || loginPw.contains(" ")) {
                 System.out.println("다시입력 : ");
                 continue;
@@ -96,7 +94,7 @@ public class MemberController {
             boolean loginPwCheck = true;
             while (true) {
                 System.out.print("비밀번호 확인 :");
-                loginPwConfirm = sc.nextLine().trim();
+                loginPwConfirm = Container.sc.nextLine().trim();
                 if (loginPwConfirm.length() == 0 || loginPwConfirm.contains(" ")) {
                     System.out.println("다시입력 : ");
                     continue;
@@ -113,7 +111,7 @@ public class MemberController {
         }
         while (true) {
             System.out.print("이름 입력 : ");
-            name = sc.nextLine().trim();
+            name = Container.sc.nextLine().trim();
             if (name.length() == 0 || name.contains(" ")) {
                 System.out.println("다시입력 ");
                 continue;
@@ -121,5 +119,21 @@ public class MemberController {
             break;
         }
         System.out.println(name + "님 가입 되었습니다.");
+    }
+    public void showProfile() {
+        if (Container.session.loginedMemberId == -1) {
+            System.out.println("로그인 상태 x");
+            return;
+        } else {
+            System.out.println(Container.session.loginedMember);
+        }
+
+    }
+
+    public void logout() {
+        System.out.println("==로그아웃==");
+        Container.session.loginedMemberId = -1;
+        Container.session.loginedMember = null;
+
     }
 }
